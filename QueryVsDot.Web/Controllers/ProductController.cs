@@ -32,15 +32,11 @@ namespace QueryVsDot.Web.Controllers
         {
             using (var ctx = new AdventureWorksLT2017Context())
             {
-                var categories = ctx.ProductCategory.Select(p => new
-                {
-                    p.Name,
-                    p.ProductCategoryId,
-                    ParentProductCategory = new { 
-                        p.ParentProductCategory.Name, 
-                        p.ParentProductCategoryId 
-                    }
-                }).ToList();
+                var categories = ctx.ProductCategory
+                    .Where(p => p.ParentProductCategoryId != null)
+                    .Select(p => new { p.ProductCategoryId, p.Name, Count = p.Product.Count})
+                    .ToList();
+
                 return Ok(categories);
             }
         }
@@ -77,5 +73,27 @@ namespace QueryVsDot.Web.Controllers
                 }
             }
         }
+
+        [HttpGet]
+        [Route("categories/avgprice")]
+        public async Task<IActionResult> GetAveragePricePerCategory()
+        {
+            using (var ctx = new AdventureWorksLT2017Context())
+            {
+                var res = from c in ctx.ProductCategory
+                          group c by new
+                          {
+                              c.ProductCategoryId
+                          } into g
+                          select new
+                          {
+                              g.Key,
+                              Avg = g.Select(x => x.Product.Average(p => p.ListPrice))
+                          };
+                return Ok(res.ToList());
+            }// https://stackoverflow.com/questions/15696817/translate-sql-to-lambda-linq-with-groupby-and-average
+
+        }
+
     }
 }
