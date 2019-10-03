@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QueryVsDot.Model.Models;
 using System;
 using System.Collections.Generic;
@@ -80,18 +81,10 @@ namespace QueryVsDot.Web.Controllers
         {
             using (var ctx = new AdventureWorksLT2017Context())
             {
-                var res = from c in ctx.ProductCategory
-                          group c by new
-                          {
-                              c.ProductCategoryId
-                          } into g
-                          select new
-                          {
-                              g.Key,
-                              Avg = g.Select(x => x.Product.Average(p => p.ListPrice))
-                          };
-                return Ok(res.ToList());
-            }// https://stackoverflow.com/questions/15696817/translate-sql-to-lambda-linq-with-groupby-and-average
+                var res = ctx.AveragePriceCategories.FromSqlRaw("select pc.Name, avg(p.ListPrice) as avg from SalesLT.Product p join SalesLT.ProductCategory pc on p.ProductCategoryID = pc.ProductCategoryID group by pc.ProductCategoryID, pc.Name order by avg")
+                    .ToList();
+                return Ok(res);
+            }
 
         }
 
