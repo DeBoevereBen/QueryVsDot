@@ -1,0 +1,11 @@
+.customer {
+  width: 20%;
+}
+
+.customer > div {
+  width: 45%;
+}
+
+.customers {
+  width: 100vw;
+}
