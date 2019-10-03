@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class AppServiceService {
   private url: string;
   constructor(private http: HttpClient) {
-    this.url = 'https://localhost:5001/api/product/categories';
+      this.url = 'https://localhost:44358/api/product/categories';
   }
   getProductsInCategory(id: number) {
     return this.http.get(this.url + '/' + id);
@@ -16,6 +16,6 @@ export class AppServiceService {
     return this.http.get(this.url);
   }
   getCustomers(name: string) {
-    return this.http.get('https://localhost:5001/api/customer/search/' + name);
+      return this.http.get('https://localhost:44358/api/customer/search/' + name);
   }
 }
