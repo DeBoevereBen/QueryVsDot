@@ -1,0 +1,17 @@
+<h1 class="text-center">Search customer</h1>
+<div class="input-group">
+  <input
+    (input)="getCustomers()"
+    class="form-control"
+    type="text"
+    [(ngModel)]="name"
+  />
+</div>
+<div class="customers">
+  <div class="customer" *ngFor="let cust of customers">
+    <div class="details">
+      <h1>{{ cust.firstName }} {{ customers.lastName }}</h1>
+      <p>{{ cust.emailAddress }}</p>
+    </div>
+  </div>
+</div>
