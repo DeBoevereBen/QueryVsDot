@@ -14,14 +14,45 @@ namespace QueryVsDot.Web.Controllers
         // get all customers 
         [HttpGet]
         [Route("")]
-        public void GetCustomers()
+        public async Task<IActionResult> GetCustomers()
         {
             using (var ctx = new AdventureWorksLT2017Context())
             {
-                //ctx.Customer.
+                var result = from c in ctx.Customer
+                             select c;
+
+                return Ok(result.ToList());
             }
         }
 
+        // get customer by id
+        [HttpGet]
+        [Route("{CustomerId}")]
+        public async Task<IActionResult> GetCustomerById(int CustomerId)
+        {
+            using (var ctx = new AdventureWorksLT2017Context())
+            {
+                var res = from c in ctx.Customer
+                          where c.CustomerId == CustomerId
+                          select c;
+                return Ok(res);
+            }
+        }
+
+        // search customer by name (contains)
+        [HttpGet]
+        [Route("search/{Name}")]
+        public async Task<IActionResult> SearchCustomerByName(string Name)
+        {
+            using (var ctx = new AdventureWorksLT2017Context())
+            {
+                var res = from c in ctx.Customer
+                          where c.FirstName.Contains(Name)
+                          select c;
+                
+                return Ok(res.ToList());
+            }
+        }
 
     }
 }
